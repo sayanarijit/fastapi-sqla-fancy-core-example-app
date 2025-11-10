@@ -1,14 +1,14 @@
-Run
+### Run
 
 ```bash
-uv sync
+uv sync --all-extras
 
-docker-compose up -d  # Or podman-compose up -d
+# docker-compose up -d  # Or podman-compose up -d
 
-uv run app.py
+uv run src/app.py
 ```
 
-Test
+### Test
 
 ```bash
 # Create book and author
@@ -21,7 +21,7 @@ curl http://localhost:8000/books
 curl http://localhost:8000/authors
 ```
 
-Stress Test with sanity check
+### Stress Test with sanity check
 
 ```bash
 # Run parallel insert queries with wrk

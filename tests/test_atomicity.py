@@ -1,4 +1,5 @@
 import asyncio
+import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -9,7 +10,7 @@ import pytest_asyncio
 import sqlalchemy as sa
 
 # Add parent directory to path to import app modules
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, os.path.join(str(Path(__file__).parent.parent), "src"))
 
 import db
 from app import app
