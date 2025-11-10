@@ -5,7 +5,8 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from tables import tf
 
-engine = create_async_engine("sqlite+aiosqlite:///example.db")
+engine = create_async_engine("sqlite+aiosqlite:///./test.db")
+# engine = create_async_engine("postgresql+asyncpg://test:test@localhost:5432/test")
 fancy_engine = fancy(engine)
 atomic = fancy_engine.atomic
 run = fancy_engine.atx

@@ -35,4 +35,4 @@ class Book:
         )
     )
 
-    Table = tf(sa.Table("book", sa.MetaData()))
+    Table = tf("book")

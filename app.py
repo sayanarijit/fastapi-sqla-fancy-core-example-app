@@ -56,7 +56,33 @@ async def create_book(payload: schemas.CreateBook) -> int:
     return res.scalar_one()
 
 
+@app.get("/stats")
+async def get_stats():
+    """Perform a data integrity check between books and authors."""
+
+    author_count = (
+        await db.run(sa.select(sa.func.count("*")).select_from(Author.Table))
+    ).scalar_one()
+    max_author_id = (
+        await db.run(sa.select(sa.func.max(Author.id)).select_from(Author.Table))
+    ).scalar_one()
+
+    book_count = (
+        await db.run(sa.select(sa.func.count("*")).select_from(Book.Table))
+    ).scalar_one()
+    max_book_id = (
+        await db.run(sa.select(sa.func.max(Book.id)).select_from(Book.Table))
+    ).scalar_one()
+
+    return {
+        "book count": book_count,
+        "author count": author_count,
+        "max book id": max_book_id,
+        "max author id": max_author_id,
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app:app", host="localhost", port=8000, reload=True)
+    uvicorn.run("app:app", host="localhost", port=8000, reload=True, workers=4)

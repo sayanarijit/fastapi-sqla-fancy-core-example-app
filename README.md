@@ -3,6 +3,8 @@ Run
 ```bash
 uv sync
 
+docker-compose up -d  # Or podman-compose up -d
+
 uv run app.py
 ```
 
@@ -17,4 +19,14 @@ curl http://localhost:8000/books
 
 # Get authors
 curl http://localhost:8000/authors
+```
+
+Stress Test with sanity check
+
+```bash
+# Run parallel insert queries with wrk
+wrk "http://localhost:8000/books" -s tests/wrk.lua
+
+# Check data integrity
+curl "http://localhost:8000/sanitycheck"
 ```
