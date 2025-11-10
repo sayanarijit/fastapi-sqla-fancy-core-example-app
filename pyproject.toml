@@ -1,0 +1,13 @@
+[project]
+name = "fastapi-sqla-fancy-core-example-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi",
+  "sqlalchemy",
+  "aiosqlite",
+  "uvicorn",
+  "sqla-fancy-core",
+]
