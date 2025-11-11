@@ -1,7 +1,7 @@
 ### Run
 
 ```bash
-uv sync --all-extras
+uv sync
 
 # docker-compose up -d  # Or podman-compose up -d
 
