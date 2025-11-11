@@ -28,5 +28,5 @@ curl http://localhost:8000/authors
 wrk "http://localhost:8000/books" -s tests/wrk.lua
 
 # Check data integrity
-curl "http://localhost:8000/sanitycheck"
+curl "http://localhost:8000/stats"
 ```
