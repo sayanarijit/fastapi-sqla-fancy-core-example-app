@@ -25,8 +25,8 @@ curl http://localhost:8000/authors
 
 ```bash
 # Run parallel insert queries with wrk
-wrk "http://localhost:8000/books" -s tests/wrk.lua
+wrk http://localhost:8000/books -s tests/wrk.lua
 
 # Check data integrity
-curl "http://localhost:8000/stats"
+curl http://localhost:8000/stats
 ```
