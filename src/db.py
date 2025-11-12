@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from sqla_fancy_core import fancy
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from tables import tf
+from tables import tb
 
 engine = create_async_engine("sqlite+aiosqlite:///./test.db")
 # engine = create_async_engine("postgresql+asyncpg://test:test@localhost:5432/test")
@@ -14,12 +14,12 @@ run = fancy_engine.atx
 
 async def create_all_tables():
     async with engine.begin() as conn:
-        await conn.run_sync(tf.metadata.create_all)
+        await conn.run_sync(tb.metadata.create_all)
 
 
 async def drop_all_tables():
     async with engine.begin() as conn:
-        await conn.run_sync(tf.metadata.drop_all)
+        await conn.run_sync(tb.metadata.drop_all)
 
 
 async def transaction_middleware(request, call_next):
