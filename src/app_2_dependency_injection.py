@@ -43,8 +43,8 @@
 
 - **Explicit**: Connection/transaction can be explicitly passed as parameter.
 
-- **Familiar API**: You can use the standard SQLAlchemy's `Engine.begin()`,
-  `Engine.connect()` and `Connection.execute()` methods.
+- **Familiar API**: You can use the standard SQLAlchemy's `begin()`, `connect()` and
+  `execute()` methods.
 
 ### Disadvantages
 
@@ -54,6 +54,13 @@
 
 - **Import time overhead**: Usage of additional decorators can cause slight increase in
   import/load time.
+
+- **Limits enforcement of same connection**: Since `Inject(engine)` aquires a new
+  connection if it's not given, (unlike `ax()`), you cannot enforce that the same
+  connection object is passed to every function in a multi-step operation.
+    >>> async with engine.begin() as tr:  # Create an explicit transaction
+    ...     await create_book(... tr=tr)  # Uses the passed transaction
+    ...     await get_book(...)  # Aquires a new connection because tr is not passed
 """
 
 import random
