@@ -29,6 +29,16 @@ async def transaction_middleware(request, call_next):
     return response
 
 
+async def transaction_dependency():
+    async with engine.begin() as conn:
+        yield conn
+
+
+async def connection_dependency():
+    async with engine.connect() as conn:
+        yield conn
+
+
 @asynccontextmanager
 async def lifespan(app):
     print("Starting up...")

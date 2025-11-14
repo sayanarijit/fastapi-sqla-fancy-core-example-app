@@ -13,7 +13,7 @@ import sqlalchemy as sa
 sys.path.insert(0, os.path.join(str(Path(__file__).parent.parent), "src"))
 
 import db
-from app import app
+from app_3_optional_param import app
 from tables import Author, Book
 
 

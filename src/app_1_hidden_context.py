@@ -85,4 +85,4 @@ async def get_stats():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app:app", host="localhost", port=8000, reload=True, workers=4)
+    uvicorn.run("app_1_hidden_context:app")
