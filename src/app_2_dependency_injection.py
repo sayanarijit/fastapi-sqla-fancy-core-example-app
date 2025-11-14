@@ -7,7 +7,7 @@
 - Add `@connect` decorator to the functions that must use a regular/transactional
   connection.
 
-- Marks the parameter that should receive a `Connection/AsyncConnection` by declaring
+- Mark the parameter that should receive a `Connection/AsyncConnection` by declaring
   `Inject(engine)` as tha default param.
 
 - Use the standard `execute()` method of the passed connection to execute queries.
