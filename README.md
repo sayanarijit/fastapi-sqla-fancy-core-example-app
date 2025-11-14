@@ -5,9 +5,9 @@ uv sync
 
 # docker-compose up -d  # Or podman-compose up -d
 
-uv run ./src/app_1_transparent.py
+uv run ./src/app_1_hidden_context.py
 # or
-uv run ./src/app_2_decorator.py
+uv run ./src/app_2_dependency_injection.py
 # or
 uv run ./src/app_3_optional_param.py
 ```

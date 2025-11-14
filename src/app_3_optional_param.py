@@ -1,3 +1,75 @@
+"""An example FastAPI app demonstrating the optional param pattern.
+
+### Summary
+
+- Wrap the SQLAlchemy's `Engine/AsyncEngine` instance with `fancy(engine)` wrapper.
+    >>> fancy_engine = fancy(engine)
+
+- Declare an optional parameter to receive the `Connection/AsyncConnection` object.
+
+- Use `fancy_engine`'s `tx` with the optional connection to execute queries in
+  transaction.
+    >>> async def create_book(..., tr=None):
+    ...     await fancy_engine.tx(tr, ...)
+
+- Use `fancy_engine`'s `x` with the optional connection to execute queries with or
+  without transaction.
+    >>> async def get_books(..., conn=None):
+    ...     await fancy_engine.x(conn, ...)
+
+- If a connection is not passed, (i.e. conn/tr is None), a new connection/transaction is
+  automatically created to execute the query.
+
+- If a connection is passed, it will use that connection.
+
+- If a non-transactional connection is passed to `tx()`, it will raise an error.
+
+- If a transactional connection is passed to `x()`, it will use that transaction to
+  execute the query.
+
+- You can also use the `fancy_engine`'s `atomic()` or `non_atomic()` context to avoid
+  explicitly passing the connection objects.
+    >>> async with fancy_engine.atomic():  # Creates a new transaction
+    ...     await create_book()  # Uses the transaction
+    ...     await get_books()  # Uses the transaction
+
+### Advantages
+
+- **Less boilerplate**: Allows you to call the handlers (`create_book()`, `get_books()`
+  etc.) directly, without passing around connection/transaction, making it possible to
+  re-use the same handlers in background tasks or IPython shell.
+    >>> await create_book(...)  # Creates its own atomic transaction
+    >>> await get_books(...)  # Creates its own non-atomic connection
+
+- **Explicit**: Connection/transaction can be explicitly passed as parameter.
+
+- **Complex is possible**: Allows you to optionally start a atomic/non-atomic scope and
+  call the handlers within that scope to re-use the same transaction/connection.
+    >>> async with fancy_engine.atomic():  # Create an atomic transaction
+    ...     await create_book(...)  # Uses the same atomic transaction
+    ...     await get_book(...)  # Uses the same atomic transaction
+
+- **Full control**: Also allows you to create your own explict transaction/connection
+  and call the handlers within that scope to re-use the same transaction/connection.
+    >>> async with engine.begin() as tr:  # Create an explicit transaction
+    ...     await create_book(... tr=tr)  # Uses the passed transaction
+    ...     await get_book(... conn=tr)  # Uses the passed transaction
+
+### Disadvantages
+
+- **Limits enforcement of same connection**: Since `x()` and `tx()` aquires a new
+  connection if it's not given, (unlike `ax()`), you cannot enforce that the same
+  connection object is passed to every function in a multi-step operation.
+    >>> async with engine.begin() as tr:  # Create an explicit transaction
+    ...     await create_book(... tr=tr)  # Uses the passed transaction
+    ...     await get_book(...)  # Aquires a new connection because tr is not passed
+
+- **Unfamiliar API**: Must use the fancy wrapper's `x()` and `tx()` methods instead of
+  the standard `execute()` to execute queries, and optionally use the
+  `atomic()`/`non_atomic()` methods instead of the standard `begin()`/`connect()` to
+  start transaction/connection.
+"""
+
 import random
 from typing import Annotated
 

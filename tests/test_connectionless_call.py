@@ -9,7 +9,7 @@ import pytest_asyncio
 sys.path.insert(0, os.path.join(str(Path(__file__).parent.parent), "src"))
 
 import app_1_hidden_context as app1
-import app_2_decorator as app2
+import app_2_dependency_injection as app2
 import app_3_optional_param as app3
 import db
 

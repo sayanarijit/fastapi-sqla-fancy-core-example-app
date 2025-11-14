@@ -1,3 +1,61 @@
+"""An example FastAPI app demonstrating the dependency injection pattern.
+
+### Summary
+
+- Add `@transact` decorator to the functions that must use a transactional connection.
+
+- Add `@connect` decorator to the functions that must use a regular/transactional
+  connection.
+
+- Markx the parameter that should receive a `Connection/AsyncConnection` by declaring
+  `Inject(engine)` as tha default param.
+
+- Use the standard `execute()` method of the passed connection to execute queries.
+    >>> @transact
+    ... async def create_book(..., tr=Inject(engine)):
+    ...     await tr.execute(...)
+    >>> @connect
+    ... async def get_books(..., conn=Inject(engine)):
+    ...     await conn.execute(...)
+
+- Calling the function without passing a connection explicitly to the connection param
+  will automatically start a new transaction/connection and pass it as the value.
+    >>> await create_book(...)  # Starts a new transaction
+    >>> await get_books(...)  # Aquires a new connection
+
+- Calling the function with an explicit connection as the value to the marked param will
+  use the passed connection.
+    >>> async with engine.begin() as tr:
+    ...     await create_book(..., tr=tr)  # Uses the passed transaction
+    ...     await get_books(..., conn=tr)  # Uses the passed transaction
+
+- You can pass a transactional connection to functions decorated with `@connect`, but
+  passing a non transactional connection to functions decorated with `@transact` will
+  raise error.
+
+### Advantages
+
+- **Less boilerplate**: Allows you to call the handlers (`create_book()`, `get_books()`
+  etc.) directly, without passing around connection/transaction, making it possible to
+  re-use the same handlers in background tasks or IPython shell.
+    >>> await create_book(...)  # Creates its own atomic transaction
+    >>> await get_books(...)  # Creates its own non-atomic connection
+
+- **Explicit**: Connection/transaction can be explicitly passed as parameter.
+
+- **Familiar API**: You can use the standard SQLAlchemy's `Engine.begin()`,
+  `Engine.connect()` and `Connection.execute()` methods.
+
+### Disadvantages
+
+- **Increased boilerplate**: Each route handler must use the `@connect` or `@transact`
+  decorators and the `Inject` marker. Also, passing around the connection/transaction
+  parameter when using explicit connection/transaction context adds extra boilerplate.
+
+- **Import time overhead**: Usage of additional decorators can cause slight increase in
+  import/load time.
+"""
+
 import random
 from typing import Annotated
 
@@ -98,4 +156,4 @@ async def get_stats(conn: DBConnection = Inject(db.engine)):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app_2_decorator:app")
+    uvicorn.run("app_2_dependency_injection:app")

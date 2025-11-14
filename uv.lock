@@ -371,14 +371,14 @@ wheels = [
 
 [[package]]
 name = "sqla-fancy-core"
-version = "3.0.1"
+version = "4.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "sqlalchemy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1f/4d/e31cee84d8bc3d9ff7c2e5929be490ca9e1053f728ab90a1fda05f6b725e/sqla_fancy_core-3.0.1.tar.gz", hash = "sha256:82ac496e28fd60ce33afb05102547ce3b6e997706f2c4f5d5c13e4d093bc3993", size = 93130, upload-time = "2025-11-14T09:00:34.798Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/f2/d332e3b9d44569c5f94d8480b47656552a2b8bd8810210067c8ee9fc126d/sqla_fancy_core-4.0.0.tar.gz", hash = "sha256:baf7ca95b156c80979efe3cd7e8f411b0cd720b0b4c5f40340af6a27d14c55c9", size = 95379, upload-time = "2025-11-14T12:18:27.638Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c3/de/5fe480e54d1ac1cd79709b8c2ba329f777bb27da6c6a6d403277be513c94/sqla_fancy_core-3.0.1-py3-none-any.whl", hash = "sha256:b9071fc9613b0dac318eab130aac1b826a9760d48395be629c9de3e9296f935a", size = 11721, upload-time = "2025-11-14T09:00:33.227Z" },
+    { url = "https://files.pythonhosted.org/packages/aa/3f/ab0efbf40290949ae2752a2e5ea2bb7dede19a4f0e7ba67f6ab325464a1a/sqla_fancy_core-4.0.0-py3-none-any.whl", hash = "sha256:115aa8a55cd46e5ecf2789c0a96892f375c5ea94063c9b929a2464af83655788", size = 11689, upload-time = "2025-11-14T12:18:24.458Z" },
 ]
 
 [[package]]

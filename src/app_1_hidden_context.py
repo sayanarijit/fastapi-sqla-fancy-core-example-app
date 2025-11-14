@@ -1,3 +1,75 @@
+"""An example FastAPI app demonstrating the hidden context pattern.
+
+### Summary
+
+- Wrap the SQLAlchemy's `Engine/AsyncEngine` instance with `fancy(engine)` wrapper.
+    >>> fancy_engine = fancy(engine)
+
+- Use `fancy_engine`'s `ax()` or `atx()` to execute queries in `atomic()` transaction.
+    >>> async with fancy_engine.atomic():  # Creates a new transaction
+    ...     await fancy_engine.ax(...)  # Uses the transaction
+    ...     await fancy_engine.atx(...)  # Uses the transaction
+
+- `ax()` makes sure it's called inside an `atomic()` scope. Calling outside raises error.
+
+- `atx()` can be called outside an `atomic()` scope. In that case, it will start a new
+  transaction automatically to execute the query.
+    >>> async with fancy_engine.atomic():  # Creates a new transaction
+    ...     await fancy_engine.atx(...)  # Uses the transaction
+    >>> await fancy_engine.atx(...)  # Creates a new transaction.
+
+- Use `fancy_engine`'s `nax()` to execute queries in `non_atomic()` connection.
+    >>> async with fancy_engine.non_atomic():  # Aquires a new connection
+    ...     await fancy_engine.nax(...)  # Uses the connection
+
+- `nax()` can also be called inside `atomic()` scope. In that case, it will use atomic
+  scope's transactional connection to execute the query.
+    >>> async with fancy_engine.atomic():  # Creates a new transaction
+    ...     await fancy_engine.nax(...)  # Uses the transaction
+
+- `nax()` can also be called outside the `atomic()` or `non_atomic()` scope. In that
+  case, it will aquire a new connection to run the query.
+    >>> async with fancy_engine.non_atomic():  # Aquires a new connection
+    ...     await fancy_engine.nax(...)  # Uses the connection
+    >>> await fancy_engine.nax(...)  # Aquires a new connection
+
+### Advantages
+
+- **Less boilerplate**: Allows you to call the handlers (`create_book()`, `get_books()`
+  etc.) directly, without passing around connection/transaction, making it possible to
+  re-use the same handlers in background tasks or IPython shell.
+    >>> await create_book(...)  # Creates its own atomic transaction
+    >>> await get_books(...)  # Creates its own non-atomic connection
+
+- **Simple & clean**: Hides connection/transaction management from route handlers. i.e. one
+  less variable to pass around.
+
+- **Complex is possible**: Allows you to optionally start an atomic/non-atomic scope and
+  call the handlers within that scope to re-use the same transaction/connection.
+    >>> async with fancy_engine.atomic():  # Create an atomic transaction
+    ...     await create_book(...)  # Uses the same atomic transaction
+    ...     await get_book(...)  # Uses the same atomic transaction
+
+- **Mix with other patterns**: Allows you to mix with other patterns that expect a
+  connection/transaction object as function parameter.
+    >>> async with fancy_engine.atomic() as tr:  # Create an atomic transaction
+    ...     await create_book(...)  # Uses the same atomic transaction
+    ...     await a_function_that_expects_tr(..., tr=tr)  # Uses the passed transaction
+
+### Disadvantages
+
+- **Hidden operations**: Hidden context management can make it harder to understand the
+  lifecycle of connections/transactions.
+
+- **Unfamiliar API**: Must use the fancy wrapper's `atomic()`/`non_atomic()` methods
+  instead of the standard `begin()`/`connect()` to start transaction/connection, and use
+  the `ax()`, `atx()` and `nax()` methods instead of the standard `execute()` to execute
+  queries.
+
+- **Different routers**: Need to create different routers for atomic and non-atomic
+  handlers.
+"""
+
 import random
 
 import sqlalchemy as sa
