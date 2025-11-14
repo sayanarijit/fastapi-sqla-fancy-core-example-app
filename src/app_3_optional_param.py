@@ -61,21 +61,21 @@ async def create_book(payload: schemas.CreateBook, tr: DBTransaction = None):
 
 
 @app.get("/stats")
-async def get_stats(tr: DBConnection = None):
+async def get_stats(conn: DBConnection = None):
     """Perform a data integrity check between books and authors."""
 
     author_count = (
-        await db.tx(tr, sa.select(sa.func.count("*")).select_from(Author.Table))
+        await db.x(conn, sa.select(sa.func.count("*")).select_from(Author.Table))
     ).scalar_one()
     max_author_id = (
-        await db.tx(tr, sa.select(sa.func.max(Author.id)).select_from(Author.Table))
+        await db.x(conn, sa.select(sa.func.max(Author.id)).select_from(Author.Table))
     ).scalar_one()
 
     book_count = (
-        await db.tx(tr, sa.select(sa.func.count("*")).select_from(Book.Table))
+        await db.x(conn, sa.select(sa.func.count("*")).select_from(Book.Table))
     ).scalar_one()
     max_book_id = (
-        await db.tx(tr, sa.select(sa.func.max(Book.id)).select_from(Book.Table))
+        await db.x(conn, sa.select(sa.func.max(Book.id)).select_from(Book.Table))
     ).scalar_one()
 
     return {
