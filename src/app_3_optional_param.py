@@ -10,9 +10,10 @@ from db import connection_dependency, lifespan, transaction_dependency
 from db import fancy_engine as db
 from tables import Author, Book
 
-app = FastAPI(lifespan=lifespan)
 DBTransaction = Annotated[AsyncConnection | None, Depends(transaction_dependency)]
 DBConnection = Annotated[AsyncConnection | None, Depends(connection_dependency)]
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.get("/books", response_model=list[schemas.Book])

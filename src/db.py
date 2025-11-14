@@ -8,8 +8,6 @@ from tables import tb
 engine = create_async_engine("sqlite+aiosqlite:///./test.db")
 # engine = create_async_engine("postgresql+asyncpg://test:test@localhost:5432/test")
 fancy_engine = fancy(engine)
-atomic = fancy_engine.atomic
-run = fancy_engine.atx
 
 
 async def create_all_tables():
@@ -22,11 +20,14 @@ async def drop_all_tables():
         await conn.run_sync(tb.metadata.drop_all)
 
 
-async def transaction_middleware(request, call_next):
-    async with atomic() as session:
-        request.state.db = session
-        response = await call_next(request)
-    return response
+async def atomic_scope():
+    async with fancy_engine.atomic():
+        yield
+
+
+async def non_atomic_scope():
+    async with fancy_engine.non_atomic():
+        yield
 
 
 async def transaction_dependency():

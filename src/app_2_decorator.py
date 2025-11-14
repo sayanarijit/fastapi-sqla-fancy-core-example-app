@@ -10,33 +10,10 @@ import db
 import schemas
 from tables import Author, Book
 
-app = FastAPI(lifespan=db.lifespan)
 DBTransaction = Annotated[AsyncConnection, Depends(db.transaction_dependency)]
 DBConnection = Annotated[AsyncConnection, Depends(db.connection_dependency)]
 
-
-@transact
-@app.get("/books", response_model=list[schemas.Book])
-async def get_books(
-    author_name: str | None = None, tr: DBTransaction = Inject(db.engine)
-):
-    qry = (
-        sa.select(Book.title, Author.name.label("author_name"))
-        .select_from(Book.Table)
-        .join(Author.Table)
-    )
-    if author_name:
-        qry = qry.where(Author.name == author_name)
-    res = await tr.execute(qry)
-    return res.mappings().all()
-
-
-@transact
-@app.get("/authors", response_model=list[schemas.Author])
-async def get_authors(tr: DBTransaction = Inject(db.engine)):
-    qry = sa.select(Author.id, Author.name)
-    res = await tr.execute(qry)
-    return res.mappings().all()
+app = FastAPI(lifespan=db.lifespan)
 
 
 @transact
@@ -65,6 +42,30 @@ async def create_book(
     )
     res = await tr.execute(qry)
     return res.scalar_one()
+
+
+@connect
+@app.get("/books", response_model=list[schemas.Book])
+async def get_books(
+    author_name: str | None = None, conn: DBConnection = Inject(db.engine)
+):
+    qry = (
+        sa.select(Book.title, Author.name.label("author_name"))
+        .select_from(Book.Table)
+        .join(Author.Table)
+    )
+    if author_name:
+        qry = qry.where(Author.name == author_name)
+    res = await conn.execute(qry)
+    return res.mappings().all()
+
+
+@connect
+@app.get("/authors", response_model=list[schemas.Author])
+async def get_authors(conn: DBConnection = Inject(db.engine)):
+    qry = sa.select(Author.id, Author.name)
+    res = await conn.execute(qry)
+    return res.mappings().all()
 
 
 @connect

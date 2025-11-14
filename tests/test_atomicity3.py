@@ -37,8 +37,8 @@ async def get_counts():
     books_qry = sa.select(sa.func.count()).select_from(Book.Table)
     authors_qry = sa.select(sa.func.count()).select_from(Author.Table)
 
-    books_count = (await db.run(books_qry)).scalar_one()
-    authors_count = (await db.run(authors_qry)).scalar_one()
+    books_count = (await db.fancy_engine.nax(books_qry)).scalar_one()
+    authors_count = (await db.fancy_engine.nax(authors_qry)).scalar_one()
 
     return books_count, authors_count
 
