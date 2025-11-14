@@ -8,7 +8,7 @@
   connection.
 
 - Mark the parameter that should receive a `Connection/AsyncConnection` by declaring
-  `Inject(engine)` as tha default param.
+  `Inject(engine)` as the default param.
 
 - Use the standard `execute()` method of the passed connection to execute queries.
     >>> @transact
