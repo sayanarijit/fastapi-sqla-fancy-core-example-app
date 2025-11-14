@@ -56,6 +56,9 @@
     ...     await create_book(...)  # Uses the same atomic transaction
     ...     await a_function_that_expects_tr(..., tr=tr)  # Uses the passed transaction
 
+- **Ensures same transaction**: Using `ax()` makes sure that the transaction started by
+  `atomic()` scope is used within that scope.
+
 ### Disadvantages
 
 - **Hidden operations**: Hidden context management can make it harder to understand the
