@@ -3,8 +3,7 @@ from typing import Annotated
 
 import sqlalchemy as sa
 from fastapi import Depends, FastAPI
-from sqla_fancy_core import Inject, transact
-from sqla_fancy_core.decorators import connect
+from sqla_fancy_core import Inject, connect, transact
 from sqlalchemy.ext.asyncio import AsyncConnection
 
 import db
